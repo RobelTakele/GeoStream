@@ -3,19 +3,17 @@
 # HEADER
 #================================================================
 #% SYNOPSIS
-#+    ${getCOPDEM.sh} [-hv] [-o[file]] [-rootDir <path>] [-dataDir <path>] [-latStart <lat>] [-latEnd <lat>] [-lonStart <lon>] [-lonEnd <lon>]
+#+    getCOPDEM.sh [-hv] [-o [file]] [-rootDir <path>] [-dataOutDir <path>] [-latStart <lat>] [-latEnd <lat>] [-lonStart <lon>] [-lonEnd <lon>]
 #%
 #% DESCRIPTION
-#%    This script downloads the Copernicus Digital 
-#%    Elevation Model (COP-DEM-GLO-90) data tiles using aria2
-#%    and curl.
+#%    This script downloads the Copernicus Digital Elevation Model (COP-DEM-GLO-90) data tiles.
 #%
 #% OPTIONS
 #%    -o [file], --output=[file]    Set log file to record the 
 #%                                  downloaded list of tiles 
 #%                                  (default=/dev/null)
 #%    -rootDir <path>               Path to the working directory            
-#%    -dataDir <path>               Path to the directory where to save the downloaded data                  
+#%    -dataOutDir <path>            Path to the directory where to save the downloaded data                  
 #%    -latStart <lat>               Southern boundary in decimal degrees (°S)
 #%    -latEnd <lat>                 Northern boundary in decimal degrees (°N)
 #%    -lonStart <lon>               Western boundary in decimal degrees (°W)
@@ -23,15 +21,19 @@
 #%    -v, --version                  Print script information
 #%
 #% EXAMPLES
-#%    ${getCOPDEM.sh} -o DEFAULT -rootDir /home/robel/WSC/ -dataDir /home/robel/WSC/data/Elevation/COPDEM-GLO90/Tiles/ -latStart -46 -latEnd 38 -lonStart -25 -lonEnd 64
+#%    getCOPDEM.sh -o DEFAULT -rootDir /home/robel/WSC/ -dataOutDir /data/Elevation/COPDEM-GLO90/Tiles/ -latStart -46 -latEnd 38 -lonStart -25 -lonEnd 64
 #%
 #================================================================
 #- IMPLEMENTATION
-#-    version         ${getCOPDEM.sh} 0.1.0
+#-    version         getCOPDEM.sh 0.1.0
 #-    author          Robel Takele
 #-    copyright       Copyright (c) 2024 Robel Takele Miteku (https://github.com/RobelTakele)
-#-    license         GNU General Public License
+#-    license         GNU General Public License (see https://www.gnu.org/licenses/gpl-3.0.en.html)
 #-
+#================================================================
+# DEPENCY
+#     The function dependes on curl, aria2c and parallel libraries. 
+#
 #================================================================
 #  HISTORY
 #     2024/09/29 : RobelTakele : Script creation
@@ -44,30 +46,12 @@
 #================================================================
 # END_OF_HEADER
 #================================================================
-
-filePath() {
-    local path="$1"
-    shift
-    for element in "$@"; do
-        # Remove trailing slash from the base path
-        path="${path%/}"
-        # Remove leading slash from the next element
-        element="${element#/}"
-        # Concatenate with a single slash in between
-        path="$path/$element"
-    done
-    echo "$path"
-}
-
 #################################################################
 #################################################################
-## ***** strict error checking:
+## ************ Input arguments (Default values) ************* ##
 
-set -euo pipefail
-
-## ***** Default values:
-rootDir="/home/robel/WSC/"
-dataDir="$(filePath "${rootDir}" "/data/Elevation/COPDEM-GLO90/Tiles/")"
+rootDir="/home/robel/WSC/"                 
+dataOutDir="/data/Elevation/COPDEM-GLO90/Tiles/"
 latStart=-20  # Southern boundary (°S)
 latEnd=30     # Northern boundary (°N)
 lonStart=20  # Western boundary (°W)
@@ -75,68 +59,53 @@ lonEnd=40     # Eastern boundary (°E)
 logFile="/dev/null"
 
 #################################################################
+## *************** Program Starts Here !!! ******************* ##
 #################################################################
-## ***** Parse input arguments:
-while [ $# -gt 0 ]; do
-    case "$1" in
-        -rootDir)
-            rootDir="$2"
-            shift 2
-            ;;
-        -dataDir)
-            dataDir="$2"
-            shift 2
-            ;;
-        -latStart)
-            latStart="$2"
-            shift 2
-            ;;
-        -latEnd)
-            latEnd="$2"
-            shift 2
-            ;;
-        -lonStart)
-            lonStart="$2"
-            shift 2
-            ;;
-        -lonEnd)
-            lonEnd="$2"
-            shift 2
-            ;;
-        -o)
-            logFile="$2"
-            shift 2
-            ;;
-        -v|--version)
-            echo "${getCOPDEM.sh} 0.1.1"
-            exit 0
-            ;;
-        *)
-            echo "Unknown option: $1"
-            exit 1
-            ;;
-    esac
-done
+#################################################################
 
-## ***** Validate input parameters:
-if [ -z "$rootDir" ] || [ -z "$dataDir" ]; then
-    echo "Error: rootDir and dataDir must be provided." >&2
-    exit 1
-fi
+filePath() {
+    local path="$1"
+    shift
+    for element in "$@"; do
+        path="${path%/}"
+        element="${element#/}"
+        path="$path/$element"
+    done
+    echo "$path"
+}
 
-## ***** Log setup:
-exec > >(tee -i "$logFile") 2>&1
+checkDependency() {
+    command -v "$1" >/dev/null 2>&1 || { 
+        echo >&2 "$1 is required but it's not installed. Please install it and try again."; 
+        exit 1; 
+    }
+}
 
-## ***** Create the data directory if it does not exist:
-mkdir -p "$(filePath "${dataDir}")"
+downloadTile() {
+    tileURL="$1"
+    dataDir="$2"
+    
+    echo "***** Checking availability for $tileURL *****"
+    if curl --head --silent --fail "$tileURL" > /dev/null; then
+        echo "***** Downloading $tileURL *****"
+        
+        ## ***** Retry logic for download:
+        while true; do
+            aria2c -d "$dataDir" "$tileURL" --save-session log.txt
+            
+            if [ $(wc -l < log.txt) -eq 0 ]; then
+                echo "Downloaded $tileURL successfully."
+                break
+            else
+                echo "Errors detected in download, retrying..."
+                sleep 10
+            fi
+        done
+    else
+        echo "***** $tileURL not available, skipping... *****"
+    fi
+}
 
-## ***** Log the starting time:
-echo "Starting COP-DEM tile download at $(date)"
-
-## ***** URL base for downloading tiles:
-urlBase="https://prism-dem-open.copernicus.eu/pd-desk-open-access/prismDownload/COP-DEM_GLO-90-DGED__2023_1/"
-
-## ***** Function to generate the list of tile names:
 makeTileList() {
     local latStart=$1
     local latEnd=$2
@@ -169,43 +138,102 @@ makeTileList() {
     echo "${tileList[@]}"
 }
 
+#################################################################
+#################################################################
+#################################################################
+## ***** strict error checking and DEBUGGING:
+ set -euo pipefail     ## -e: Exit immediately if a non-zero exit status is returned.
+                      ## -u: Treat unset variables as errors.
+                      ## -o: Set the pipefail option.
+
+## ***** Parse input arguments:
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -rootDir)
+            rootDir="$2"
+            shift 2
+            ;;
+        -dataOutDir)
+            dataOutDir="$2"
+            shift 2
+            ;;
+        -latStart)
+            latStart="$2"
+            shift 2
+            ;;
+        -latEnd)
+            latEnd="$2"
+            shift 2
+            ;;
+        -lonStart)
+            lonStart="$2"
+            shift 2
+            ;;
+        -lonEnd)
+            lonEnd="$2"
+            shift 2
+            ;;
+        -o)
+            logFile="$2"
+            shift 2
+            ;;
+        -v|--version)
+            echo "0.1.0"
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+## ***** Validate input parameters:
+if [ -z "$rootDir" ] || [ -z "$dataOutDir" ]; then
+    echo "Error: rootDir and dataDir must be provided." >&2
+    exit 1
+fi
+
+dataDir="$(filePath "${rootDir}" "${dataOutDir}")"
+
+## ***** base URL for downloading tiles:
+urlBase="https://prism-dem-open.copernicus.eu/pd-desk-open-access/prismDownload/COP-DEM_GLO-90-DGED__2023_1/"
+
+checkDependency "curl"
+checkDependency "aria2c"
+checkDependency "parallel"
+
+## ***** Log setup:
+exec > >(tee -i "$logFile") 2>&1
+
+## ***** Create the data directory if it does not exist:
+mkdir -p "$(filePath "${dataDir}")"
+
+## ***** Log the starting time:
+echo "Starting COP-DEM tile download at $(date)"
+
 ## ***** Generate and save the list of tiles:
 tileList=$(makeTileList ${latStart} ${latEnd} ${lonStart} ${lonEnd} ${urlBase})
 tileListFile="$(filePath "${dataDir}")/Africa_Copernicus_GLO90_Tile_List.txt"
 echo "${tileList}" | tr ' ' '\n' > "${tileListFile}"
 
-## ***** Parallel download function:
-downloadTile() {
-    tileURL="$1"
-    dataDir="$2"
-    
-    echo "***** Checking availability for $tileURL *****"
-    if curl --head --silent --fail "$tileURL" > /dev/null; then
-        echo "***** Downloading $tileURL *****"
-        
-        ## ***** Retry logic for download:
-        while true; do
-            aria2c -d "$dataDir" "$tileURL" --save-session log.txt
-            
-            if [ $(wc -l < log.txt) -eq 0 ]; then
-                echo "Downloaded $tileURL successfully."
-                break
-            else
-                echo "Errors detected in download, retrying..."
-                sleep 10
-            fi
-        done
-    else
-        echo "***** $tileURL not available, skipping... *****"
-    fi
-}
-
-## ***** Parallel download using xargs and aria2c:
+## ***** Parallel download using parallel and aria2c:
 export -f downloadTile
-export dataDir  
+export urlBase
 
-cat "${tileListFile}" | xargs -P 4 -I {} bash -c 'downloadTile "$@"' _ {} "$dataDir"
+echo "Starting COP-DEM tile downloads in parallel at $(date)"
+cat "${tileListFile}" | parallel -j 4 downloadTile {} "$dataDir"
+echo "COP-DEM download process completed at $(date)"
 
+###############################################################################
+###############################################################################
+#              >>>>>>>>>>   End of code   <<<<<<<<<<                          #
+###############################################################################
+###############################################################################
+
+###############################################################################
+###############################################################################
+# Extras: >>>
 # ## ***** Download tiles in serial using aria2:
 # for tile in $tileList; do 
 #     echo "***** checking availability for $tile *****"
@@ -228,12 +256,5 @@ cat "${tileListFile}" | xargs -P 4 -I {} bash -c 'downloadTile "$@"' _ {} "$data
 #         echo "***** $tile not available, skipping... *****"
 #     fi
 # done
-
-echo "COP-DEM download process completed at $(date)"
-
 ###############################################################################
 ###############################################################################
-#              >>>>>>>>>>   End of code   <<<<<<<<<<                          #
-###############################################################################
-###############################################################################
-
