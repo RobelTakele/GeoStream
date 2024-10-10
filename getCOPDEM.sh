@@ -52,10 +52,10 @@
 
 rootDir="/home/robel/WSC/"                 
 dataOutDir="/data/Elevation/COPDEM-GLO90/Tiles/"
-latStart=-20  # Southern boundary (°S)
-latEnd=30     # Northern boundary (°N)
-lonStart=20  # Western boundary (°W)
-lonEnd=40     # Eastern boundary (°E)
+latStart=-36    # Southern boundary (°S)
+latEnd=37       # Northern boundary (°N)
+lonStart=-16    # Western boundary (°W)
+lonEnd=52       # Eastern boundary (°E)
 logFile="/dev/null"
 
 #################################################################
@@ -215,7 +215,7 @@ echo "Starting COP-DEM tile download at $(date)"
 ## ***** Generate and save the list of tiles:
 tileList=$(makeTileList ${latStart} ${latEnd} ${lonStart} ${lonEnd} ${urlBase})
 tileListFile="$(filePath "${dataDir}")/Africa_Copernicus_GLO90_Tile_List.txt"
-echo "${tileList}" | tr ' ' '\n' > "${tileListFile}"
+# echo "${tileList}" | tr ' ' '\n' > "${tileListFile}"
 
 ## ***** Parallel download using parallel and aria2c:
 export -f downloadTile

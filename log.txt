@@ -1,3 +1,0 @@
-https://prism-dem-open.copernicus.eu/pd-desk-open-access/prismDownload/COP-DEM_GLO-90-DGED__2023_1/Copernicus_DSM_30_S20_00_E024_00.tar	
- gid=95ce46a6e6ba8901
- dir=/home/robel/WSC/data/Elevation/COPDEM-GLO90/Tiles/
