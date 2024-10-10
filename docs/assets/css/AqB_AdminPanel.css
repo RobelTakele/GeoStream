@@ -1,0 +1,149 @@
+table { width: 100%; 
+    border-collapse: 
+    collapse; 
+}
+th, td { border: 2px solid black; 
+     padding: 5px; 
+     font-size: 20px; 
+     text-align: center;
+}
+th { background-color: #10948d; 
+ color: white; 
+}
+
+#pagination {
+    display: flex;
+    justify-content: center; /* Centers the pagination */
+    align-items: center;
+    margin-top: 20px; /* Adds space between the table and pagination */
+    position: relative; /* Makes it relative to the flow of the document (below the table) */
+}
+
+
+#pagination button {
+    background-color: #10948d;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+
+  #pagination button:hover {
+    background-color: #4bb6b9;
+  }
+  
+  #pagination #pageNum {
+    font-size: 20px;
+    margin: 0 10px;
+  }
+
+/* Modal overlay */
+.modal {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+
+  .modal.show {
+    opacity: 1;
+    transform: translateY(10px);
+  }
+  
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .close-notif {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
+/* Notification banner styling */
+.notification-banner {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #10948d; /* Background color of the notification */
+    border-left: 5px solid #fff;
+    border-radius: 5px;
+    position: relative;
+}
+
+/* Notification text */
+.notif-text {
+    color: white;
+    font-size: 18px;
+    margin-left: 15px;
+    flex-grow: 1;
+}
+
+/* Notification icon */
+.notification-icon {
+    font-size: 30px;
+    color: white;
+}
+
+/* Close button styling */
+.close-notif {
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+/* Show modal */
+.modal.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Slide-down animation for modal */
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Hover effect on close button */
+.close-notif:hover {
+    color: #f1f1f1;
+    transition: 0.3s;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background-color: #10948d;
+    padding-top: 20px;
+  }
+  
+  .content {
+    margin-left: 220px;
+    padding: 20px;
+  }
+  
+  .nav-link {
+    color: white;
+    padding: 10px;
+  }
+  
+  .nav-link:hover {
+    background-color: #046f6b;
+  }
+  
