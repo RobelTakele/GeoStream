@@ -1,4 +1,3 @@
-// src/app/page.js
 export default function HomePage() {
   return (
     <div className="container mt-5">

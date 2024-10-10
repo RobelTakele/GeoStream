@@ -1,4 +1,3 @@
-// src/app/layout.js
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 import Image from 'next/image'; // Import Image component from Next.js
 import "./AqBlandingPage.css"; // Custom global styles
@@ -16,10 +15,9 @@ export default function RootLayout({ children }) {
         {/* Navigation Bar */}
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#2d8c9c" }}>
           <div className="container-fluid">
-            {/* Logo and Title */}
             <a className="navbar-brand d-flex align-items-center" href="/">
               <Image
-                src="/assets/img/AquaBEHERlogo.png" // Replace <img> with <Image>
+                src="/assets/img/AquaBEHERlogo.png"
                 alt="AquaBEHER Logo"
                 width={60}
                 height={60}
@@ -28,7 +26,6 @@ export default function RootLayout({ children }) {
               <span style={{ color: "white", fontSize: "28px", fontWeight: "bold" }}>AquaBEHERweb</span>
             </a>
 
-            {/* Navbar Links */}
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav">
                 <li className="nav-item">
@@ -43,7 +40,6 @@ export default function RootLayout({ children }) {
               </ul>
             </div>
 
-            {/* Navbar Toggler */}
             <button
               className="navbar-toggler"
               type="button"
@@ -66,7 +62,6 @@ export default function RootLayout({ children }) {
         {/* Footer */}
         <footer className="footer mt-auto py-3">
           <div className="container d-flex align-items-center">
-            {/* Institution Logo */}
             <Image
               src="/assets/img/IPSlogo.png"
               alt="Institution Logo"
@@ -74,7 +69,6 @@ export default function RootLayout({ children }) {
               height={100}
               style={{ marginRight: "10px" }}
             />
-            {/* Institution Details */}
             <div className="footer-details">
               <p style={{ margin: 0, fontWeight: "bold", fontSize: "18px" }}>Institute of Plant Sciences</p>
               <p style={{ margin: 0 }}>Sant Anna School of Advanced Studies</p>
@@ -86,13 +80,6 @@ export default function RootLayout({ children }) {
             </div>
           </div>
         </footer>
-
-        {/* Remove synchronous script */}
-        <script async
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-ENjdO4Dr2bkBIFxQpeo+7FvW5z5yib1D2eR50Zmn+3GkR5T6c1dTRKfF5QGgzaf8"
-          crossOrigin="anonymous"
-        ></script>
       </body>
     </html>
   );
