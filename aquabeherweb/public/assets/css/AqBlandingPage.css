@@ -1,0 +1,240 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    background-image: url('../img/SSSAwatermark.png'); /* Optional background image */
+    background-size: 30%;
+    background-position: center;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #2d8c9c 20%, #146f80 100%);
+    color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header-logo img {
+    height: 100px; /* Increase the size of the logo */
+    margin-left: 10px;
+    margin-top: -10px;
+    margin-bottom: -10px;
+    transform: perspective(800px) rotateX(5deg); /* 3D effect */
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.2); /* Shadow for 3D effect */
+    transition: transform 0.3s ease;
+}
+
+.header-logo img:hover {
+    transform: perspective(800px) rotateX(0deg) scale(1.05); /* 3D hover effect */
+}
+
+.header-text {
+    flex-grow: 1;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Transparent form */
+    padding: 50px;
+    border-radius: 15px;
+    font-size: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px); /* Blur effect behind form */
+    width: 500px; /* Single registration panel width */
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    margin: 10px auto;
+    font-size: 1.5rem;
+}
+
+.nav-tabs .nav-link.active {
+    font-weight: bold;
+    margin: 10px auto;
+    color: #29776d;
+    background-color: rgba(110, 207, 207, 0.5);
+}
+
+/* Buttons: Improve hover effects and transitions */
+button.btn-primary {
+    background: linear-gradient(135deg, #389cbb 0%, #168492 100%);
+    border: none;
+    margin: 10px auto;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    align-items: center;
+    transition: background 0.3s ease, transform 0.2s ease; /* Add transition for smoother interaction */
+    width: 60%;
+}
+
+button.btn-primary:hover {
+    background: linear-gradient(135deg, #14858d 0%, #158f8f 100%);
+    transform: scale(1.05); /* Scale effect on hover */
+    cursor: pointer;
+}
+
+
+.footer {
+    background: linear-gradient(135deg, rgba(46, 151, 165, 0.8), rgba(26, 126, 139, 0.8)); /* Gradient blue */
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    backdrop-filter: blur(5px); /* Blur effect for footer */
+}
+
+.footer img {
+    height: 100px; /* Larger logo in footer */
+    margin-right: 15px;
+    transform: perspective(500px) rotateX(0deg); /* 3D effect for footer logo */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.footer img:hover {
+    transform: perspective(500px) rotateX(0deg) scale(1.05); /* 3D hover effect */
+}
+
+.footer-details {
+    display: flex;
+    align-items: center;
+    text-align: left;
+}
+
+.footer-details p {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.footer-details a {
+    color: white;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .header-text {
+        font-size: 2.5rem;
+    }
+    
+    .form-container {
+        width: 90%; /* Full width on smaller screens */
+    }
+
+    .footer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .footer img {
+        margin-bottom: 10px;
+    }
+}
+
+.tab-icon {
+    width: 80px; /* Adjust as needed */
+    height: 80px; /* Adjust as needed */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.tab-icon:hover {
+    transform: scale(1.1); /* Enlarge icon slightly on hover */
+}
+
+/* Styling for Admin Login Button */
+.admin-login-btn {
+    position: absolute;
+    right: 50px;
+    top: 40px;
+    background-color: #0f6372;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+    align-items: center;
+  }
+
+  .admin-login-btn:hover {
+    background-color: #46c5db;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem;
+    align-items: center;
+    transform: scale(1.05); /* Hover effect for the login button */
+}
+
+/* Make the form more responsive */
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%; /* Full width on smaller screens */
+    }
+}
+
+  /* Modal (dropdown small window) styling */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0px;
+    right: 200px;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 20% auto;
+    padding: 50px;
+    border: 1px solid #888;
+    width: 400px;
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .close {
+    float: right;
+    width: 100px; /* Width of the icon */
+    height: 100px; /* Height of the icon */
+    background-image: url('../img/closeIcon.png'); /* Path to the icon image */
+    background-size: contain; /* Ensure the icon fits inside the element */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    background-position: center; /* Center the icon */
+    cursor: pointer;
+    position: relative;
+    margin-top: 0px; /* Adjust top margin for better alignment */
+    margin-bottom: 0%; /* Adjust bottom margin for spacing */
+    border: none; /* Remove any default borders */
+    outline: none; /* Remove focus outlines */
+  }
+  
+  .close:hover,
+  .close:focus {
+    opacity: 0.7; /* Adds a hover effect to make the icon fade */
+  }
+  
+  
